@@ -1,0 +1,95 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:sale.line,template:"
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+msgctxt "field:sale.line,template_childs:"
+msgid "Childs"
+msgstr "Hijos"
+
+msgctxt "field:sale.line,template_parent:"
+msgid "Parent"
+msgstr "Padre"
+
+msgctxt "field:sale_pos.set_quantities.start,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:sale_pos.set_quantities.start,lines:"
+msgid "Quantities"
+msgstr "Cantidades"
+
+msgctxt "field:sale_pos.set_quantities.start,n_lines:"
+msgid "Quantities"
+msgstr "Cantidades"
+
+msgctxt "field:sale_pos.set_quantities.start,template_line:"
+msgid "Template Line"
+msgstr "Línia de plantilla"
+
+msgctxt "field:sale_pos.set_quantities.start,total_quantity:"
+msgid "Total Quantity"
+msgstr "Cantidad total"
+
+msgctxt "field:sale_pos.set_quantities.start,unit_digits:"
+msgid "Unit Digits"
+msgstr "Dígitos unidad"
+
+msgctxt "field:sale_pos.set_quantities.start.line,attribute_value_x:"
+msgid "Value"
+msgstr "Valor"
+
+msgctxt "field:sale_pos.set_quantities.start.line,attribute_value_y:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:sale_pos.set_quantities.start.line,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:sale_pos.set_quantities.start.line,start:"
+msgid "Start"
+msgstr "Iniciar"
+
+msgctxt "field:sale_pos.set_quantities.start.line,total:"
+msgid "Total"
+msgstr "Total"
+
+msgctxt "field:sale_pos.set_quantities.start.line,unit_digits:"
+msgid "Unit Digits"
+msgstr "Dígitos unidad"
+
+msgctxt "model:ir.action,name:wizard_set_quantities"
+msgid "Set Quantities"
+msgstr "Fijar cantidades"
+
+msgctxt "model:sale_pos.set_quantities.start,name:"
+msgid "Set Quantities Wizard"
+msgstr "Asistente para fijar cantidades"
+
+msgctxt "model:sale_pos.set_quantities.start.line,name:"
+msgid "Set Quantities Wizard Start Line"
+msgstr "Línia del asistente para fijar cantidades"
+
+msgctxt "view:sale.line:"
+msgid "Set Quantities"
+msgstr "Fijar cantidades"
+
+msgctxt "view:sale_pos.set_quantities.start.line:"
+msgid "Set Quantities"
+msgstr "Fijar cantidades"
+
+msgctxt "view:sale_pos.set_quantities.start:"
+msgid "Set Quantities"
+msgstr "Fijar cantidades"
+
+msgctxt "wizard_button:sale_pos.set_quantities,start,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:sale_pos.set_quantities,start,set_:"
+msgid "Set"
+msgstr "Fijar"
