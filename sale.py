@@ -215,7 +215,8 @@ class SaleLine:
         else:
             default = default.copy()
         default['template_childs'] = None
-        new_lines = super(SaleLine, cls).copy(lines, default=default)
+        with Transaction().set_context(no_update_template_qty=True):
+            new_lines = super(SaleLine, cls).copy(lines, default=default)
 
         new_line_by_line = dict((l, nl) for l, nl in zip(lines, new_lines))
         for new_line in new_lines:
