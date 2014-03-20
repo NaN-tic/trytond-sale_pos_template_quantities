@@ -83,6 +83,8 @@ class SaleLine:
         cls._buttons.update({
                 'set_quantities_wizard': {
                     'invisible': ~Bool(Eval('template')),
+                    'readonly': Eval('_parent_sale', {}).get('state',
+                        '') != 'draft',
                     },
                 })
 
