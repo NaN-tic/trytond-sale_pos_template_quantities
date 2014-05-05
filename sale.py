@@ -333,7 +333,11 @@ class SetQuantitiesStartLine(ModelView):
                     str(attribute_value.id))
                 new_element.set('sum', attribute_value.rec_name)
                 new_elements.append(new_element)
-            element_value_x.getparent().extend(new_elements)
+
+            parent = element_value_x.getparent()
+            base_index = parent.index(element_value_x)
+            for i, element in enumerate(new_elements, 1):
+                parent.insert(base_index + i, element)
 
         return super(SetQuantitiesStartLine, cls)._view_look_dom_arch(tree,
             type_, field_children=field_children)
@@ -372,7 +376,7 @@ class SetQuantitiesStartLine(ModelView):
                             'readonly': And(~Bool(Eval(name, 0)),
                                 Eval(name, -1) != 0),
                             })
-                    res[name]['string'] = attribute_value.rec_name
+                    res[name]['string'] = (' ' * 12) + attribute_value.rec_name
             if 'total' in fields_names:
                 res['total']['on_change_with'] = y_field_names
         return res
