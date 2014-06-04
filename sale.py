@@ -18,14 +18,14 @@ class SaleLine:
     __name__ = 'sale.line'
 
     template = fields.Many2One('product.template', 'Product Template',
-        domain=[('salable', '=', True)],
+        domain=[
+            ('salable', '=', True),
+            ],
         states={
             'invisible': Or(Eval('type') != 'line', Bool(Eval('product', 0))),
             'readonly': Or(Bool(Eval('product', 0)),
                 Bool(Eval('template_childs'))),
             },
-        on_change=['template', 'quantity', 'unit', 'description',
-            '_parent_sale.party'],
         depends=['type', 'product', 'template_childs'])
     template_parent = fields.Many2One('sale.line', 'Parent', domain=[
             ('type', '=', 'line'),
@@ -69,7 +69,6 @@ class SaleLine:
         cls.quantity.states['readonly'] = Or(cls.quantity.states['readonly'],
             Bool(Eval('template', 0)))
         cls.quantity.depends.append('template')
-        cls.quantity.on_change += ['template', 'template_parent']
 
         for fname in ('unit_price', 'amount', 'taxes'):
             field = getattr(cls, fname)
@@ -88,6 +87,8 @@ class SaleLine:
                     },
                 })
 
+    @fields.depends('template', 'quantity', 'unit', 'description',
+        '_parent_sale.party')
     def on_change_template(self):
         Template = Pool().get('product.template')
 
@@ -139,6 +140,7 @@ class SaleLine:
         self.type = 'template'
         return res
 
+    @fields.depends('template', 'template_parent')
     def on_change_quantity(self):
         Template = Pool().get('product.template')
 
@@ -274,9 +276,10 @@ class SetQuantitiesStart(ModelView):
     n_lines = fields.Integer('Quantities')
     total_quantity = fields.Float('Total Quantity',
         digits=(16, Eval('unit_digits', 2)), readonly=True,
-        on_change_with=['lines'], depends=['unit_digits'])
+        depends=['unit_digits'])
     unit_digits = fields.Integer('Unit Digits')
 
+    @fields.depends('lines')
     def on_change_with_total_quantity(self):
         quantity = 0.0
         for line in self.lines:
@@ -299,10 +302,10 @@ class SetQuantitiesStartLine(ModelView):
     attribute_value_y = fields.Float('Quantity',
         digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'])
     total = fields.Float('Total', digits=(16, Eval('unit_digits', 2)),
-        readonly=True, on_change_with=['attribute_value_y'],
-        depends=['unit_digits'])
+        readonly=True, depends=['unit_digits'])
     unit_digits = fields.Integer('Unit Digits')
 
+    @fields.depends('attribute_value_y')
     def on_change_with_total(self):
         total_quantity = 0.0
         for fname in dir(self):
