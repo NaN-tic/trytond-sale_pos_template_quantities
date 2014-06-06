@@ -233,18 +233,21 @@ class SaleLine:
         return new_lines
 
     @classmethod
-    def write(cls, lines, vals):
+    def write(cls, *args):
         template_lines_to_update = set()
-        if not Transaction().context.get('no_update_template_qty'):
-            if vals.get('template_parent'):
-                template_lines_to_update.add(vals['template_parent'])
-            if vals.get('template_childs'):
-                template_lines_to_update |= set(l.id for l in lines)
-            if 'quantity' in vals:
-                for line in lines:
-                    if line.template_parent:
-                        template_lines_to_update.add(line.template_parent.id)
-        super(SaleLine, cls).write(lines, vals)
+        actions = iter(args)
+        for lines, vals in zip(actions, actions):
+            if not Transaction().context.get('no_update_template_qty'):
+                if vals.get('template_parent'):
+                    template_lines_to_update.add(vals['template_parent'])
+                if vals.get('template_childs'):
+                    template_lines_to_update |= set(l.id for l in lines)
+                if 'quantity' in vals:
+                    for line in lines:
+                        if line.template_parent:
+                            template_lines_to_update.add(
+                                line.template_parent.id)
+        super(SaleLine, cls).write(*args)
         if template_lines_to_update:
             for template_line in cls.browse(list(template_lines_to_update)):
                 template_line.update_template_line_quantity()
