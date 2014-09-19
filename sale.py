@@ -54,20 +54,26 @@ class SaleLine:
         cls.product.states['invisible'] = Or(
             cls.product.states['invisible'],
             Bool(Eval('template', 0)))
-        cls.product.states['readonly'] = Or(
-            cls.product.states['readonly'],
-            Bool(Eval('template', 0)),
-            Bool(Eval('template_parent', 0)))
-        cls.product.depends += ['template', 'template_parent']
+        if 'template' not in cls.product.depends:
+            readonly = (Bool(Eval('template', 0)),
+                        Bool(Eval('template_parent', 0)))
+            if cls.product.states.get('reaonly'):
+                readonly = Or(cls.product.states['readonly'], readonly)
+            cls.product.states['readonly'] = readonly
+            cls.product.depends += ['template', 'template_parent']
 
         cls.unit.states['required'] = Or(cls.unit.states['required'],
             Bool(Eval('template')))
-        cls.unit.states['readonly'] = Or(cls.unit.states['readonly'],
-            Bool(Eval('template_parent')))
+        readonly = Bool(Eval('template_parent'))
+        if cls.unit.states.get('readonly'):
+            readonly = Or(cls.unit.states['readonly'], readonly)
+        cls.unit.states['readonly'] = readonly
         cls.unit.depends += ['template', 'template_parent']
 
-        cls.quantity.states['readonly'] = Or(cls.quantity.states['readonly'],
-            Bool(Eval('template', 0)))
+        readonly = Bool(Eval('template', 0))
+        if cls.quantity.states.get('readonly'):
+            readonly = Or(cls.quantity.states['readonly'], readonly)
+        cls.quantity.states['readonly'] = readonly
         cls.quantity.depends.append('template')
 
         for fname in ('unit_price', 'amount', 'taxes'):
