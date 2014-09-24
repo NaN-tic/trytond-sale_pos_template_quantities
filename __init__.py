@@ -8,6 +8,7 @@ from .sale import *
 def register():
     Pool.register(
         Template,
+        Sale,
         SaleLine,
         SetQuantitiesStart,
         SetQuantitiesStartLine,

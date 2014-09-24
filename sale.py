@@ -9,9 +9,18 @@ from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 
-__all__ = ['SaleLine', 'SetQuantities', 'SetQuantitiesStart',
+__all__ = ['Sale', 'SaleLine', 'SetQuantities', 'SetQuantitiesStart',
     'SetQuantitiesStartLine']
 __metaclass__ = PoolMeta
+
+
+class Sale:
+    __name__ = 'sale.sale'
+
+    @classmethod
+    def delete(cls, sales):
+        with Transaction().set_context(no_update_template_qty=True):
+            super(Sale, cls).delete(sales)
 
 
 class SaleLine:
