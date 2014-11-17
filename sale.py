@@ -191,10 +191,18 @@ class SaleLine:
     def update_template_line_quantity(self):
         if not self.template_childs:
             return
+
+        old_unit_price = self.unit_price
+        if (self.on_change_quantity()['unit_price'] == old_unit_price):
+            # The user didn't changed the unit price
+            old_unit_price = None
+
         self.quantity = sum(l.quantity for l in self.template_childs)
         ocq_res = self.on_change_quantity()
         for f, v in ocq_res.iteritems():
             setattr(self, f, v)
+        if old_unit_price is not None:
+            self.unit_price = old_unit_price
 
     def update_sequence(self, next_sequence):
         if self.template_parent:
@@ -504,10 +512,17 @@ class SetQuantities(Wizard):
                 with Transaction().set_context(no_update_template_qty=True):
                     line.save()
 
+        old_unit_price = template_line.unit_price
+        if template_line.on_change_quantity()['unit_price'] == old_unit_price:
+            # The user didn't changed the unit price
+            old_unit_price = None
+
         template_line.quantity = self.start.total_quantity
         ocq_res = template_line.on_change_quantity()
         for f, v in ocq_res.iteritems():
             setattr(template_line, f, v)
+        if old_unit_price is not None:
+            template_line.unit_price = old_unit_price
 
         with Transaction().set_context(no_update_template_qty=True):
             template_line.save()
