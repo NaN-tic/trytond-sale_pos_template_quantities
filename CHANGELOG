@@ -1,4 +1,12 @@
-Version 3.4.0 - 2014-11-03
+Version 3.4.0 - 2014-11-05
 
-Version 3.2.0 - 2014-06-04
+Version 3.2.x - 2014-11-03
+* Fix sale deletion when there are template lines with childs
+* Made more robust setup when set the fields' states attributes
+
+Version 3.2.0 - 2014-06-06
+* Add migration for missing write function
+* Visual improvements in set quantities wizard
+
+Version 3.0.0 - 2014-04-03
 * Initial release
