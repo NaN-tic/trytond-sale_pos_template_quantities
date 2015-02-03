@@ -70,19 +70,27 @@ class Template:
                         })
         return prices
 
-    def product_by_attributes(self):
+    def product_by_attributes(self, raw_products=False):
         """
         Return a not completted matrix (dictionary of defaultdict) with
         X Attribute Values as keys for first level, Y Attribute Values as key
         for second level, and the product with these two attributes as value.
         If the template doesn't have variants for some combination of X/Y
         attribute values it doesn't add this
-        It only return
+        ;param raw_products: provide compatibility awith product_raw_variant
+            module and its dependants.
+            If this module is installed, it returns main variants despite this
+            param is true
         """
         if not self or not self.id:
             return {}
         product_by_attributes = defaultdict(dict)
         for product in self.products:
+            if hasattr(product, 'is_raw_product'):
+                if raw_products and not product.is_raw_product:
+                    continue
+                elif not raw_products and product.is_raw_product:
+                    continue
             value_x = value_y = None
             for attribute_value in product.attribute_values:
                 # TODO: better attribute selection
