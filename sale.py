@@ -173,11 +173,11 @@ class SaleLine:
                         Decimal(1) / 10 ** self.__class__.unit_price.digits[1])
         return res
 
-    def get_invoice_line(self, invoice_type):
+    def get_invoice_line(self):
         if self.template_parent:
             return []
 
-        invoice_lines = super(SaleLine, self).get_invoice_line(invoice_type)
+        invoice_lines = super(SaleLine, self).get_invoice_line()
         for inv_line in invoice_lines:
             inv_line.sequence = self.sequence
         return invoice_lines
