@@ -11,10 +11,10 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button
 
 __all__ = ['Sale', 'SaleLine', 'SetQuantities', 'SetQuantitiesStart',
     'SetQuantitiesStartLine']
-__metaclass__ = PoolMeta
 
 
 class Sale:
+    __metaclass__ = PoolMeta
     __name__ = 'sale.sale'
 
     @classmethod
@@ -24,6 +24,7 @@ class Sale:
 
 
 class SaleLine:
+    __metaclass__ = PoolMeta
     __name__ = 'sale.line'
 
     template = fields.Many2One('product.template', 'Product Template',
@@ -108,8 +109,7 @@ class SaleLine:
         Template = Pool().get('product.template')
 
         if not self.template:
-            return {}
-        res = {}
+            return
 
         party = None
         party_context = {}
@@ -119,59 +119,67 @@ class SaleLine:
                 party_context['language'] = party.lang.code
 
         self.quantity = 0
-        res['quantity'] = 0
 
         category = self.template.sale_uom.category
         if not self.unit or self.unit not in category.uoms:
-            res['unit'] = self.template.sale_uom.id
             self.unit = self.template.sale_uom
-            res['unit.rec_name'] = self.template.sale_uom.rec_name
-            res['unit_digits'] = self.template.sale_uom.digits
 
-        with Transaction().set_context(self._get_context_sale_price()):
-            res['unit_price'] = Template.get_sale_price([self.template],
-                0)[self.template.id]
-            if res['unit_price']:
-                res['unit_price'] = res['unit_price'].quantize(
-                    Decimal(1) / 10 ** self.__class__.unit_price.digits[1])
-
-        res['taxes'] = []
+        # Set taxes before unit_price to have taxes in context of sale price
+        taxes = []
         pattern = self._get_tax_rule_pattern()
         for tax in self.template.customer_taxes_used:
             if party and party.customer_tax_rule:
                 tax_ids = party.customer_tax_rule.apply(tax, pattern)
                 if tax_ids:
-                    res['taxes'].extend(tax_ids)
+                    taxes.extend(tax_ids)
                 continue
-            res['taxes'].append(tax.id)
+            taxes.append(tax.id)
         if party and party.customer_tax_rule:
             tax_ids = party.customer_tax_rule.apply(None, pattern)
             if tax_ids:
-                res['taxes'].extend(tax_ids)
+                taxes.extend(tax_ids)
+        self.taxes = taxes
+
+        with Transaction().set_context(self._get_context_sale_price()):
+            self.unit_price = Template.get_sale_price([self.template],
+                0)[self.template.id]
+            if self.unit_price:
+                self.unit_price = self.unit_price.quantize(
+                    Decimal(1) / 10 ** self.__class__.unit_price.digits[1])
+
+        # pattern = self._get_tax_rule_pattern()
+        # for tax in self.template.customer_taxes_used:
+            # if party and party.customer_tax_rule:
+                # tax_ids = party.customer_tax_rule.apply(tax, pattern)
+                # if tax_ids:
+                    # res['taxes'].extend(tax_ids)
+                # continue
+            # res['taxes'].append(tax.id)
+        # if party and party.customer_tax_rule:
+            # tax_ids = party.customer_tax_rule.apply(None, pattern)
+            # if tax_ids:
+                # res['taxes'].extend(tax_ids)
 
         if not self.description:
             with Transaction().set_context(party_context):
-                res['description'] = Template(self.template.id).rec_name
-        self.type = 'template'
-        return res
+                self.description = Template(self.template.id).rec_name
 
     @fields.depends('template', 'template_parent')
     def on_change_quantity(self):
         Template = Pool().get('product.template')
 
-        res = super(SaleLine, self).on_change_quantity()
+        super(SaleLine, self).on_change_quantity()
 
         if self.template_parent:
-            res['unit_price'] = Decimal('0.0')
+            self.unit_price = Decimal('0.0')
         elif self.template:
             with Transaction().set_context(
                     self._get_context_sale_price()):
-                res['unit_price'] = Template.get_sale_price([self.template],
+                self.unit_price = Template.get_sale_price([self.template],
                     self.quantity or 0)[self.template.id]
-                if res['unit_price']:
-                    res['unit_price'] = res['unit_price'].quantize(
+                if self.unit_price:
+                    self.unit_price = self.unit_price.quantize(
                         Decimal(1) / 10 ** self.__class__.unit_price.digits[1])
-        return res
 
     def get_invoice_line(self):
         if self.template_parent:
@@ -193,14 +201,13 @@ class SaleLine:
             return
 
         old_unit_price = self.unit_price
-        if (self.on_change_quantity()['unit_price'] == old_unit_price):
+        if (self.on_change_quantity().unit_price == old_unit_price):
             # The user didn't changed the unit price
             old_unit_price = None
 
         self.quantity = sum(l.quantity for l in self.template_childs)
-        ocq_res = self.on_change_quantity()
-        for f, v in ocq_res.iteritems():
-            setattr(self, f, v)
+        self.on_change_quantity()
+
         if old_unit_price is not None:
             self.unit_price = old_unit_price
 
@@ -503,9 +510,7 @@ class SetQuantities(Wizard):
                     line.sale = template_line.sale
                     line.quantity = quantity
                     line.unit_price = Decimal('0.0')
-                    ocp_res = line.on_change_product()
-                    for f, v in ocp_res.iteritems():
-                        setattr(line, f, v)
+                    line.on_change_product()
 
                 line.quantity = quantity
                 line.unit_price = Decimal('0.0')
@@ -513,14 +518,13 @@ class SetQuantities(Wizard):
                     line.save()
 
         old_unit_price = template_line.unit_price
-        if template_line.on_change_quantity()['unit_price'] == old_unit_price:
+        template_line.on_change_quantity()
+        if template_line.unit_price == old_unit_price:
             # The user didn't changed the unit price
             old_unit_price = None
 
         template_line.quantity = self.start.total_quantity
-        ocq_res = template_line.on_change_quantity()
-        for f, v in ocq_res.iteritems():
-            setattr(template_line, f, v)
+        template_line.on_change_quantity()
         if old_unit_price is not None:
             template_line.unit_price = old_unit_price
 

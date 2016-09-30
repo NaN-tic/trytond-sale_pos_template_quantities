@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<data>
+    <xpath expr="/tree/field[@name='product']" position="before">
+        <field name="type"/>
+        <field name="template"/>
+    </xpath>
+    <xpath expr="/tree/field[@name='unit']" position="after">
+        <button name="set_quantities_wizard" string="Set Quantities"/>
+    </xpath>
+</data>
