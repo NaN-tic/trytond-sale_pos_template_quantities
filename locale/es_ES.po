@@ -16,7 +16,7 @@ msgstr "Padre"
 
 msgctxt "field:sale_pos.set_quantities.start,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:sale_pos.set_quantities.start,lines:"
 msgid "Quantities"
@@ -48,7 +48,7 @@ msgstr "Cantidad"
 
 msgctxt "field:sale_pos.set_quantities.start.line,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:sale_pos.set_quantities.start.line,start:"
 msgid "Start"

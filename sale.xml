@@ -9,6 +9,17 @@
             <field name="name">sale_line_list</field>
         </record>
 
+        <record model="ir.ui.view" id="sale_line_view_tree">
+            <field name="model">sale.line</field>
+            <field name="inherit" ref="sale.sale_line_view_tree"/>
+            <field name="name">sale_line_tree</field>
+        </record>
+        <record model="ir.ui.view" id="sale_line_view_tree_sequence">
+            <field name="model">sale.line</field>
+            <field name="inherit" ref="sale.sale_line_view_tree_sequence"/>
+            <field name="name">sale_line_tree_sequence</field>
+        </record>
+
         <record model="ir.ui.view" id="sale_line_view_form">
             <field name="model">sale.line</field>
             <field name="inherit" ref="sale.sale_line_view_form"/>

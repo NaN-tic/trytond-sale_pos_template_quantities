@@ -94,9 +94,9 @@ class Template:
             value_x = value_y = None
             for attribute_value in product.attribute_values:
                 # TODO: better attribute selection
-                if attribute_value.attribute.name.startswith('colors'):
+                if attribute_value.attribute.code.startswith('colors'):
                     value_x = attribute_value
-                elif attribute_value.attribute.name.startswith('sizes'):
+                elif attribute_value.attribute.code.startswith('sizes'):
                     value_y = attribute_value
                 if value_x and value_y:
                     break
@@ -112,7 +112,7 @@ class Template:
         """
         x_attribute_values = set(attr_v for p in self.products
             for attr_v in p.attribute_values
-            if attr_v.attribute.name.startswith('colors'))  # TODO
+            if attr_v.attribute.code.startswith('colors'))  # TODO
         return sorted(x_attribute_values, key=attrgetter('sequence'))
 
     def get_y_attribute_values(self):
@@ -122,5 +122,5 @@ class Template:
         """
         y_attribute_values = set(attr_v for p in self.products
             for attr_v in p.attribute_values
-            if attr_v.attribute.name.startswith('sizes'))  # TODO
+            if attr_v.attribute.code.startswith('sizes'))  # TODO
         return sorted(y_attribute_values, key=attrgetter('sequence'))
