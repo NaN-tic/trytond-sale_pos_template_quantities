@@ -447,6 +447,7 @@ class SetQuantities(Wizard):
             y_values = product_by_attributes[attr_value_x]
             line_vals = {
                 'attribute_value_x': attr_value_x.id,
+                'attribute_value_x.rec_name': attr_value_x.rec_name,
                 'unit_digits': template_line.unit.digits,
                 }
             line_total_quantity = 0.0
@@ -462,6 +463,7 @@ class SetQuantities(Wizard):
 
         return {
             'template_line': template_line.id,
+            'template_line.rec_name': template_line.rec_name,
             'lines': lines_vlist,
             'n_lines': len(lines_vlist),
             'total_quantity': total_quantity,
