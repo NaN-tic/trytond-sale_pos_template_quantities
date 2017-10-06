@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from trytond.model import ModelView, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder
+from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder, If
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 
@@ -57,16 +57,13 @@ class SaleLine:
             cls.type.states['readonly'] = Or(Bool(Eval('template_parent')),
                 Bool(Eval('template_childs')))
         cls.type.depends += ['template_parent', 'template_childs']
-        # TODO
-        #cls.product.domain.append(If(Bool(Eval('template_parent', 0)),
-        #        ('template', '=', Eval('template_parent.template', 0)),
-        #        ()))
-        cls.product.states['invisible'] = Or(
-            cls.product.states['invisible'],
-            Bool(Eval('template', 0)))
+
+        cls.product.states['invisible'] = Or(cls.product.states['invisible'],
+            Bool(Eval('template', -1)))
+
         if 'template' not in cls.product.depends:
-            readonly = (Bool(Eval('template', 0)),
-                        Bool(Eval('template_parent', 0)))
+            readonly = Or(Bool(Eval('template', -1)),
+                       Bool(Eval('template_parent', -1)))
             if cls.product.states.get('reaonly'):
                 readonly = Or(cls.product.states['readonly'], readonly)
             cls.product.states['readonly'] = readonly
