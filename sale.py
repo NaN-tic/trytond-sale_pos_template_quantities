@@ -13,8 +13,7 @@ __all__ = ['Sale', 'SaleLine', 'SetQuantities', 'SetQuantitiesStart',
     'SetQuantitiesStartLine']
 
 
-class Sale:
-    __metaclass__ = PoolMeta
+class Sale(metaclass=PoolMeta):
     __name__ = 'sale.sale'
 
     @classmethod
@@ -23,8 +22,7 @@ class Sale:
             super(Sale, cls).delete(sales)
 
 
-class SaleLine:
-    __metaclass__ = PoolMeta
+class SaleLine(metaclass=PoolMeta):
     __name__ = 'sale.line'
 
     template = fields.Many2One('product.template', 'Product Template',
@@ -383,7 +381,7 @@ class SetQuantitiesStartLine(ModelView):
         res = super(SetQuantitiesStartLine, cls).fields_get(fields_names)
 
         # prevent sort clicking in column header
-        for field_values in res.values():
+        for field_values in list(res.values()):
             field_values['sortable'] = False
 
         template_line = SaleLine(Transaction().context.get('active_id'))
@@ -448,7 +446,7 @@ class SetQuantities(Wizard):
                 'unit_digits': template_line.unit.digits,
                 }
             line_total_quantity = 0.0
-            for attr_value_y, product in y_values.items():
+            for attr_value_y, product in list(y_values.items()):
                 quantity = 0
                 if product in child_line_by_product:
                     quantity = child_line_by_product[product].quantity

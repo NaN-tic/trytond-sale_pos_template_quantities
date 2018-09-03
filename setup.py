@@ -4,7 +4,7 @@
 from setuptools import setup
 import re
 import os
-import ConfigParser
+import configparser
 
 MODULE = 'sale_pos_template_quantities'
 PREFIX = 'nantic'
@@ -14,7 +14,7 @@ MODULE2PREFIX = {}
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.readfp(open('tryton.cfg'))
 info = dict(config.items('tryton'))
 for key in ('depends', 'extras_depend', 'xml'):
