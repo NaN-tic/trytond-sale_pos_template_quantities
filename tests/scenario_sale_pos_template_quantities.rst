@@ -70,6 +70,16 @@ Create attributes::
     >>> Attribute = Model.get('product.attribute')
     >>> attributes = create_attributes()
 
+Create account category::
+
+    >>> ProductCategory = Model.get('product.category')
+    >>> account_category = ProductCategory(name="Account Category")
+    >>> account_category.accounting = True
+    >>> account_category.account_expense = expense
+    >>> account_category.account_revenue = revenue
+    >>> account_category.customer_taxes.append(tax)
+    >>> account_category.save()
+
 Create product::
 
     >>> ProductUom = Model.get('product.uom')
@@ -82,11 +92,8 @@ Create product::
     >>> template.purchasable = True
     >>> template.salable = True
     >>> template.list_price = Decimal('10')
-    >>> template.cost_price = Decimal('5')
     >>> template.cost_price_method = 'fixed'
-    >>> template.account_expense = expense
-    >>> template.account_revenue = revenue
-    >>> template.customer_taxes.append(tax)
+    >>> template.account_category = account_category
     >>> attributes = Attribute.find()
     >>> for attribute in attributes:
     ...     template.attributes.append(attribute)
