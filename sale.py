@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from trytond.model import ModelView, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder, If
+from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 
@@ -100,7 +100,7 @@ class SaleLine:
                     },
                 })
 
-    @fields.depends('template', 'quantity', 'unit', 'description',
+    @fields.depends('template', 'quantity', 'unit', 'description', 'sale',
         '_parent_sale.party')
     def on_change_template(self):
         Template = Pool().get('product.template')

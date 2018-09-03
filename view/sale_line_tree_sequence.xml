@@ -7,6 +7,6 @@
         <field name="template"/>
     </xpath>
     <xpath expr="/tree/field[@name='unit']" position="after">
-        <button name="set_quantities_wizard" string="Set Quantities"/>
+        <button name="set_quantities_wizard"/>
     </xpath>
 </data>

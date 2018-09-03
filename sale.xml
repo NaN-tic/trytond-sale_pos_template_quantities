@@ -26,6 +26,12 @@
             <field name="name">sale_line_form</field>
         </record>
 
+        <record model="ir.model.button" id="sale_line_set_quantities_wizard_button">
+            <field name="name">set_quantities_wizard</field>
+            <field name="string">Set Quantities</field>
+            <field name="model" search="[('model', '=', 'sale.line')]"/>
+        </record>
+
         <record model="ir.action.wizard" id="wizard_set_quantities">
             <field name="name">Set Quantities</field>
             <field name="wiz_name">sale_pos.set_quantities</field>

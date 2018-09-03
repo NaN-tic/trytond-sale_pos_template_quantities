@@ -8,7 +8,8 @@ Imports::
     >>> from dateutil.relativedelta import relativedelta
     >>> from decimal import Decimal
     >>> from operator import attrgetter
-    >>> from proteus import config, Model, Wizard, Report
+    >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
@@ -18,17 +19,9 @@ Imports::
     >>> from trytond.modules.product_variant.tests.tools import create_attributes
     >>> today = datetime.date.today()
 
-Create database::
+Install account_invoice::
 
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
-Install sale::
-
-    >>> Module = Model.get('ir.module')
-    >>> sale_module, = Module.find([('name', '=', 'sale_pos_template_quantities')])
-    >>> sale_module.click('install')
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules('sale_pos_template_quantities')
 
 Create company::
 
