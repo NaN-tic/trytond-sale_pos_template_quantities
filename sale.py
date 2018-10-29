@@ -144,19 +144,6 @@ class SaleLine:
                 self.unit_price = self.unit_price.quantize(
                     Decimal(1) / 10 ** self.__class__.unit_price.digits[1])
 
-        # pattern = self._get_tax_rule_pattern()
-        # for tax in self.template.customer_taxes_used:
-            # if party and party.customer_tax_rule:
-                # tax_ids = party.customer_tax_rule.apply(tax, pattern)
-                # if tax_ids:
-                    # res['taxes'].extend(tax_ids)
-                # continue
-            # res['taxes'].append(tax.id)
-        # if party and party.customer_tax_rule:
-            # tax_ids = party.customer_tax_rule.apply(None, pattern)
-            # if tax_ids:
-                # res['taxes'].extend(tax_ids)
-
         if not self.description:
             with Transaction().set_context(party_context):
                 self.description = Template(self.template.id).rec_name
