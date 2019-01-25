@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from trytond.model import ModelView, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder, If
+from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 
@@ -390,8 +390,6 @@ class SetQuantitiesStartLine(ModelView):
                 if True or name in fields_names or not fields_names:
                     y_field_names.append(name)
                     res[name] = attr_value_y_field.copy()
-                    #field_states = sttr_value_y_field.states.copy()
-                    #res[name]['states'] = encoder.encode(field_states)
                     res[name]['states'] = encoder.encode({
                             'readonly': And(~Bool(Eval(name, 0)),
                                 Eval(name, -1) != 0),
@@ -420,8 +418,11 @@ class SetQuantities(Wizard):
         template_line = SaleLine(Transaction().context.get('active_id'))
         if not template_line or not template_line.id:
             return {}
-
-        product_by_attributes = template_line.template.product_by_attributes()
+        # Raw products can be managed creating a field called raw_products
+        # into the SetQuantitiesStart model.
+        raw_products = self.start._values.get('raw_products', False)
+        product_by_attributes = template_line.template.product_by_attributes(
+            raw_products=raw_products)
         child_line_by_product = dict((l.product, l)
             for l in template_line.template_childs)
 
@@ -444,7 +445,6 @@ class SetQuantities(Wizard):
             line_vals['total'] = line_total_quantity
             total_quantity += line_total_quantity
             lines_vlist.append(line_vals)
-
         return {
             'template_line': template_line.id,
             'template_line.rec_name': template_line.rec_name,
@@ -454,13 +454,13 @@ class SetQuantities(Wizard):
             'unit_digits': template_line.unit.digits,
             }
 
-    def transition_set_(self):
+    def transition_set_(self, *args, **kwargs):
         pool = Pool()
         AttributeValue = pool.get('product.attribute.value')
         SaleLine = pool.get('sale.line')
-
         template_line = self.start.template_line
-        product_by_attributes = template_line.template.product_by_attributes()
+        product_by_attributes = template_line.template.product_by_attributes(
+            raw_products=kwargs.get('raw_products', False))
         child_line_by_product = dict((l.product, l)
             for l in template_line.template_childs)
 
