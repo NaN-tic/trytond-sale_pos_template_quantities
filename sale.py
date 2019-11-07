@@ -146,7 +146,7 @@ class SaleLine(metaclass=PoolMeta):
             with Transaction().set_context(party_context):
                 self.description = Template(self.template.id).rec_name
 
-    @fields.depends('template', 'template_parent')
+    @fields.depends('template', '_parent_template_parent.id', 'template_parent')
     def on_change_quantity(self):
         Template = Pool().get('product.template')
 
