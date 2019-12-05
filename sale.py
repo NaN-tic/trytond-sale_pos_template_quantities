@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from trytond.model import ModelView, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder, If
+from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 
