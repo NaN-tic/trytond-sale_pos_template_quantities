@@ -298,11 +298,11 @@ class SetQuantitiesStart(ModelView):
     def on_change_with_total_quantity(self):
         quantity = 0.0
         for line in self.lines:
-            for fname in dir(line):
-                if (not fname.startswith('attribute_value_y') or
+            for fname in line._values:
+                if (not fname.startswith('attribute_value_y_') or
                         fname == 'attribute_value_y'):
                     continue
-                quantity += getattr(line, fname) or 0.0
+                quantity += line._values[fname] or 0.0
         return quantity
 
 
@@ -320,14 +320,24 @@ class SetQuantitiesStartLine(ModelView):
         readonly=True, depends=['unit_digits'])
     unit_digits = fields.Integer('Unit Digits')
 
+    def __setattr__(self, name, value):
+        if name.startswith('attribute_value_y_'):
+            self._values[name] = float(value) if value is not None else None
+            return
+        return super().__setattr__(name, value)
+
+    @property
+    def _default_values(self):
+        return {}
+
     @fields.depends('attribute_value_y')
     def on_change_with_total(self):
         total_quantity = 0.0
-        for fname in dir(self):
-            if (not fname.startswith('attribute_value_y') or
+        for fname in self._values:
+            if (not fname.startswith('attribute_value_y_') or
                     fname == 'attribute_value_y'):
                 continue
-            total_quantity += getattr(self, fname) or 0.0
+            total_quantity += self._values[fname] or 0.0
         return total_quantity
 
     @classmethod
@@ -347,11 +357,10 @@ class SetQuantitiesStartLine(ModelView):
             new_elements = []
             for attribute_value in attr_value_y_list:
                 new_element = copy.copy(element_value_x)
-                new_element.set('name', 'attribute_value_y' +
+                new_element.set('name', 'attribute_value_y_' +
                     str(attribute_value.id))
                 new_element.set('sum', attribute_value.rec_name)
                 new_elements.append(new_element)
-
             parent = element_value_x.getparent()
             base_index = parent.index(element_value_x)
             for i, element in enumerate(new_elements, 1):
@@ -384,10 +393,11 @@ class SetQuantitiesStartLine(ModelView):
             encoder = PYSONEncoder()
             y_field_names = []
             for attribute_value in attr_value_y_list:
-                name = 'attribute_value_y' + str(attribute_value.id)
+                name = 'attribute_value_y_' + str(attribute_value.id)
                 if True or name in fields_names or not fields_names:
                     y_field_names.append(name)
                     res[name] = attr_value_y_field.copy()
+                    res[name]['name'] = name
                     res[name]['states'] = encoder.encode({
                             'readonly': And(~Bool(Eval(name, 0)),
                                 Eval(name, -1) != 0),
@@ -438,7 +448,7 @@ class SetQuantities(Wizard):
                 quantity = 0
                 if product in child_line_by_product:
                     quantity = child_line_by_product[product].quantity
-                line_vals['attribute_value_y%d' % attr_value_y.id] = quantity
+                line_vals['attribute_value_y_%d' % attr_value_y.id] = quantity
                 line_total_quantity += quantity
             line_vals['total'] = line_total_quantity
             total_quantity += line_total_quantity
@@ -465,11 +475,11 @@ class SetQuantities(Wizard):
         lines_to_delete = []
         for quantity_line in self.start.lines:
             value_x = quantity_line.attribute_value_x
-            for fname in dir(quantity_line):
-                if (not fname.startswith('attribute_value_y') or
-                        fname == 'attribute_value_y'):
+            for value in quantity_line._values:
+                if (not value.startswith('attribute_value_y_') or
+                        value == 'attribute_value_y'):
                     continue
-                attribute_value_id = int(fname[17:])
+                attribute_value_id = int(value.split('_')[-1])
                 value_y = AttributeValue(attribute_value_id)
 
                 if value_y not in product_by_attributes[value_x]:
@@ -478,7 +488,7 @@ class SetQuantities(Wizard):
                 product = product_by_attributes[value_x][value_y]
                 line = child_line_by_product.get(product)
 
-                quantity = getattr(quantity_line, fname)
+                quantity = getattr(quantity_line, value)
                 if not quantity:
                     if line:
                         lines_to_delete.append(line)
