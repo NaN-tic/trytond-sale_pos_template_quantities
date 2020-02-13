@@ -234,8 +234,10 @@ class SaleLine(metaclass=PoolMeta):
         with Transaction().set_context(no_update_template_qty=True):
             new_lines = super(SaleLine, cls).copy(lines, default=default)
 
-        lines = sorted(lines, key=lambda a: (a.template, a.product))
-        new_lines = sorted(new_lines, key=lambda a: (a.template, a.product))
+        lines = sorted(lines, key=lambda a: (a.template.id if a.template else
+                0, a.product.id if a.product else 0))
+        new_lines = sorted(new_lines, key=lambda a: (a.template.id if
+                a.template else 0, a.product.id if a.product else 0))
         new_line_by_line = dict((l, nl) for l, nl in zip(lines, new_lines))
         for new_line in new_lines:
             parent_line = new_line.template_parent
