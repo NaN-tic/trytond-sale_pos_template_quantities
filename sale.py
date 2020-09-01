@@ -335,11 +335,12 @@ class SetQuantitiesStartLine(ModelView):
     @fields.depends('attribute_value_y')
     def on_change_with_total(self):
         total_quantity = 0.0
-        for fname in self._values:
-            if (not fname.startswith('attribute_value_y_') or
-                    fname == 'attribute_value_y'):
-                continue
-            total_quantity += self._values[fname] or 0.0
+        for fname, quantity in self._values._items():
+            if fname:
+                if (not fname.startswith('attribute_value_y_') or
+                        fname == 'attribute_value_y'):
+                    continue
+                total_quantity += quantity or 0.0
         return total_quantity
 
     @classmethod
