@@ -9,7 +9,7 @@ Imports::
     >>> from decimal import Decimal
     >>> from operator import attrgetter
     >>> from proteus import config, Model, Wizard
-    >>> from trytond.tests.tools import activate_modules
+    >>> from trytond.tests.tools import activate_modules, set_user
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
@@ -17,6 +17,7 @@ Imports::
     >>> from trytond.modules.account_invoice.tests.tools import \
     ...     set_fiscalyear_invoice_sequences, create_payment_term
     >>> from trytond.modules.product_variant.tests.tools import create_attributes
+    >>> from trytond.modules.sale_shop.tests.tools import create_shop
     >>> today = datetime.date.today()
 
 Install account_invoice::
@@ -106,33 +107,19 @@ Create Product Price List::
     >>> product_price_list.company = company
     >>> product_price_list.save()
 
-Create a shop::
+Create Sale Shop::
 
-    >>> Shop = Model.get('sale.shop')
-    >>> Sequence = Model.get('ir.sequence')
-    >>> Location = Model.get('stock.location')
-    >>> shop = Shop()
-    >>> shop.name = 'Shop'
-    >>> warehouse, = Location.find([
-    ...         ('type', '=', 'warehouse'),
-    ...         ])
-    >>> shop.warehouse = warehouse
-    >>> shop.price_list = product_price_list
-    >>> shop.payment_term = payment_term
-    >>> sequence, = Sequence.find([
-    ...         ('name', '=', 'Sale'),
-    ...         ])
-    >>> shop.sale_sequence = sequence
-    >>> shop.sale_invoice_method = 'shipment'
-    >>> shop.sale_shipment_method = 'order'
+    >>> shop = create_shop(payment_term, product_price_list)
     >>> shop.save()
 
 Save Sale Shop User::
 
+    >>> User = Model.get('res.user')
     >>> user, = User.find([])
     >>> user.shops.append(shop)
     >>> user.shop = shop
     >>> user.save()
+    >>> set_user(user)
 
 Create a sale::
 
