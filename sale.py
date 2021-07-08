@@ -344,7 +344,7 @@ class SetQuantitiesStartLine(ModelView):
         return total_quantity
 
     @classmethod
-    def _view_look_dom_arch(cls, tree, type_, field_children=None, level=0):
+    def parse_view(cls, tree, type, *args, **kwargs):
         pool = Pool()
         SaleLine = pool.get('sale.line')
 
@@ -369,8 +369,7 @@ class SetQuantitiesStartLine(ModelView):
             for i, element in enumerate(new_elements, 1):
                 parent.insert(base_index + i, element)
 
-        return super(SetQuantitiesStartLine, cls)._view_look_dom_arch(tree,
-            type_, field_children=field_children, level=level)
+        return super(SetQuantitiesStartLine, cls).parse_view(tree, type, *args, **kwargs)
 
     @classmethod
     def fields_get(cls, fields_names=None, level=0):
