@@ -292,9 +292,8 @@ class SetQuantitiesStart(ModelView):
         'Quantities', size=Eval('n_lines', 0), depends=['n_lines'])
     n_lines = fields.Integer('Quantities')
     total_quantity = fields.Float('Total Quantity',
-        digits=(16, Eval('unit_digits', 2)), readonly=True,
-        depends=['unit_digits'])
-    unit_digits = fields.Integer('Unit Digits')
+        digits='unit', readonly=True)
+    unit = fields.Many2One('product.uom', 'Unit')
 
     @fields.depends('lines')
     def on_change_with_total_quantity(self):
@@ -316,11 +315,9 @@ class SetQuantitiesStartLine(ModelView):
        required=True)
     attribute_value_x = fields.Many2One('product.attribute.value', 'Value',
         required=True, readonly=True)
-    attribute_value_y = fields.Float('Quantity',
-        digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'])
-    total = fields.Float('Total', digits=(16, Eval('unit_digits', 2)),
-        readonly=True, depends=['unit_digits'])
-    unit_digits = fields.Integer('Unit Digits')
+    attribute_value_y = fields.Float('Quantity', digits='unit')
+    total = fields.Float('Total', digits='unit', readonly=True)
+    unit = fields.Many2One('product.uom', 'Unit')
 
     def __setattr__(self, name, value):
         if name.startswith('attribute_value_y_'):
@@ -443,7 +440,7 @@ class SetQuantities(Wizard):
             line_vals = {
                 'attribute_value_x': attr_value_x.id,
                 'attribute_value_x.rec_name': attr_value_x.rec_name,
-                'unit_digits': template_line.unit.digits,
+                'unit': template_line.unit.id,
                 }
             line_total_quantity = 0.0
             for attr_value_y, product in list(y_values.items()):
@@ -461,7 +458,7 @@ class SetQuantities(Wizard):
             'lines': lines_vlist,
             'n_lines': len(lines_vlist),
             'total_quantity': total_quantity,
-            'unit_digits': template_line.unit.digits,
+            'unit': template_line.unit.id,
             }
 
     def transition_set_(self, *args, **kwargs):

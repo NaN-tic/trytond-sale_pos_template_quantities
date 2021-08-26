@@ -4,6 +4,5 @@
 <form>
     <field name="attribute_value_x"/>
     <field name="total"/>
-    <field name="unit_digits" invisible="1"/>
     <newline/>
 </form>

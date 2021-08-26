@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -34,9 +34,9 @@ msgctxt "field:sale_pos.set_quantities.start,total_quantity:"
 msgid "Total Quantity"
 msgstr "Cantidad total"
 
-msgctxt "field:sale_pos.set_quantities.start,unit_digits:"
-msgid "Unit Digits"
-msgstr "Dígitos unidad"
+msgctxt "field:sale_pos.set_quantities.start,unit:"
+msgid "Unit"
+msgstr "Unidad"
 
 msgctxt "field:sale_pos.set_quantities.start.line,attribute_value_x:"
 msgid "Value"
@@ -58,9 +58,9 @@ msgctxt "field:sale_pos.set_quantities.start.line,total:"
 msgid "Total"
 msgstr "Total"
 
-msgctxt "field:sale_pos.set_quantities.start.line,unit_digits:"
-msgid "Unit Digits"
-msgstr "Dígitos unidad"
+msgctxt "field:sale_pos.set_quantities.start.line,unit:"
+msgid "Unit"
+msgstr "Unidad"
 
 msgctxt "model:ir.action,name:wizard_set_quantities"
 msgid "Set Quantities"

@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -34,9 +34,9 @@ msgctxt "field:sale_pos.set_quantities.start,total_quantity:"
 msgid "Total Quantity"
 msgstr "Quantitat total"
 
-msgctxt "field:sale_pos.set_quantities.start,unit_digits:"
-msgid "Unit Digits"
-msgstr "Dígits unitat"
+msgctxt "field:sale_pos.set_quantities.start,unit:"
+msgid "Unit"
+msgstr "Unitat"
 
 msgctxt "field:sale_pos.set_quantities.start.line,attribute_value_x:"
 msgid "Value"

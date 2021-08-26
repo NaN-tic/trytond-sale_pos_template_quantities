@@ -4,5 +4,4 @@
 <tree editable="1">
     <field name="attribute_value_x"/>
     <field name="total"/>
-    <field name="unit_digits" tree_invisible="1"/>
 </tree>
