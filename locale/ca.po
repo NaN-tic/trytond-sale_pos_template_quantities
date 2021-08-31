@@ -58,10 +58,6 @@ msgctxt "field:sale_pos.set_quantities.start.line,total:"
 msgid "Total"
 msgstr "Total"
 
-msgctxt "field:sale_pos.set_quantities.start.line,unit_digits:"
-msgid "Unit Digits"
-msgstr "Dígits unitat"
-
 msgctxt "model:ir.action,name:wizard_set_quantities"
 msgid "Set Quantities"
 msgstr "Estableix quantitats"
