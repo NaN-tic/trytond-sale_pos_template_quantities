@@ -79,7 +79,7 @@ class SaleLine(metaclass=PoolMeta):
         if cls.quantity.states.get('readonly'):
             readonly = Or(cls.quantity.states['readonly'], readonly)
         cls.quantity.states['readonly'] = readonly
-        cls.quantity.depends.append('template')
+        cls.quantity.depends.add('template')
 
         for fname in ('unit_price', 'amount', 'taxes'):
             field = getattr(cls, fname)
@@ -88,7 +88,7 @@ class SaleLine(metaclass=PoolMeta):
                     Bool(Eval('template_parent', 0)))
             else:
                 field.states['readonly'] = Bool(Eval('template_parent', 0))
-            field.depends.append('template_parent')
+            field.depends.add('template_parent')
 
         cls._buttons.update({
                 'set_quantities_wizard': {
