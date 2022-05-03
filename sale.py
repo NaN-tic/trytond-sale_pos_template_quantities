@@ -54,7 +54,7 @@ class SaleLine(metaclass=PoolMeta):
         else:
             cls.type.states['readonly'] = Or(Bool(Eval('template_parent')),
                 Bool(Eval('template_childs')))
-        cls.type.depends += ['template_parent', 'template_childs']
+        cls.type.depends |= {'template_parent', 'template_childs'}
 
         cls.product.states['invisible'] = Or(cls.product.states['invisible'],
             Bool(Eval('template', -1)))
@@ -65,7 +65,7 @@ class SaleLine(metaclass=PoolMeta):
             if cls.product.states.get('reaonly'):
                 readonly = Or(cls.product.states['readonly'], readonly)
             cls.product.states['readonly'] = readonly
-            cls.product.depends += ['template', 'template_parent']
+            cls.product.depends |= {'template', 'template_parent'}
 
         cls.unit.states['required'] = Or(cls.unit.states['required'],
             Bool(Eval('template')))
@@ -73,7 +73,7 @@ class SaleLine(metaclass=PoolMeta):
         if cls.unit.states.get('readonly'):
             readonly = Or(cls.unit.states['readonly'], readonly)
         cls.unit.states['readonly'] = readonly
-        cls.unit.depends += ['template', 'template_parent']
+        cls.unit.depends |= {'template', 'template_parent'}
 
         readonly = Bool(Eval('template', 0))
         if cls.quantity.states.get('readonly'):
