@@ -34,7 +34,10 @@ class SaleLine(metaclass=PoolMeta):
             'readonly': Or(Bool(Eval('product', 0)),
                 Bool(Eval('template_childs'))),
             },
-        depends=['type', 'product', 'template_childs'])
+        context={
+            'company': Eval('company'),
+            },
+        depends=['type', 'product', 'template_childs', 'company'])
     template_parent = fields.Many2One('sale.line', 'Parent', domain=[
             ('type', '=', 'line'),
             ('template', '!=', None),
