@@ -8,6 +8,7 @@ from trytond.pool import Pool, PoolMeta
 from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
+from trytond.modules.product import round_price
 
 __all__ = ['Sale', 'SaleLine', 'SetQuantities', 'SetQuantitiesStart',
     'SetQuantitiesStartLine']
@@ -142,8 +143,7 @@ class SaleLine(metaclass=PoolMeta):
             self.unit_price = Template.get_sale_price([self.template],
                 0)[self.template.id]
             if self.unit_price:
-                self.unit_price = self.unit_price.quantize(
-                    Decimal(1) / 10 ** self.__class__.unit_price.digits[1])
+                self.unit_price = round_price(self.unit_price)
 
         if not self.description:
             with Transaction().set_context(party_context):
@@ -163,8 +163,7 @@ class SaleLine(metaclass=PoolMeta):
                 self.unit_price = Template.get_sale_price([self.template],
                     self.quantity or 0)[self.template.id]
                 if self.unit_price:
-                    self.unit_price = self.unit_price.quantize(
-                        Decimal(1) / 10 ** self.__class__.unit_price.digits[1])
+                    self.unit_price = round_price(self.unit_price)
 
     def get_invoice_line(self):
         if self.template_parent:
