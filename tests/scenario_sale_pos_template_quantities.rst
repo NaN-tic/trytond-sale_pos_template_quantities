@@ -22,7 +22,7 @@ Imports::
 
 Install account_invoice::
 
-    >>> config = activate_modules('sale_pos_template_quantities')
+    >>> config = activate_modules(['sale_pos_template_quantities', 'product_price_list_formula'])
 
 Create company::
 
@@ -75,6 +75,12 @@ Create account category::
     >>> account_category.customer_taxes.append(tax)
     >>> account_category.save()
 
+Create Price List Category::
+
+    >>> PriceListCategory = Model.get('product.price_list.category')
+    >>> price_list_category = PriceListCategory(name='Default')
+    >>> price_list_category.save()
+
 Create product::
 
     >>> ProductUom = Model.get('product.uom')
@@ -88,6 +94,7 @@ Create product::
     >>> template.list_price = Decimal('10')
     >>> template.cost_price_method = 'fixed'
     >>> template.account_category = account_category
+    >>> template.price_list_category = price_list_category
     >>> attributes = Attribute.find()
     >>> for attribute in attributes:
     ...     template.attributes.append(attribute)
@@ -101,15 +108,16 @@ Create payment term::
 
 Create Product Price List::
 
-    >>> ProductPriceList = Model.get('product.price_list')
-    >>> product_price_list = ProductPriceList()
-    >>> product_price_list.name = 'Price List'
-    >>> product_price_list.company = company
-    >>> product_price_list.save()
+    >>> PriceList = Model.get('product.price_list')
+    >>> price_list = PriceList(name='Default')
+    >>> price_list_line = price_list.lines.new()
+    >>> price_list_line.formula = 'product.list_price_used'
+    >>> price_list_line.price_list_category = price_list_category
+    >>> price_list.save()
 
 Create Sale Shop::
 
-    >>> shop = create_shop(payment_term, product_price_list)
+    >>> shop = create_shop(payment_term, price_list)
     >>> shop.save()
 
 Save Sale Shop User::
@@ -130,6 +138,7 @@ Create a sale::
     >>> sale.payment_term = payment_term
     >>> sale_line = sale.lines.new()
     >>> sale_line.template = template
+    >>> sale_line.quantity = 2.0
     >>> sale.save()
     >>> sale.reload()
     >>> line_template = sale.lines[0]

@@ -60,10 +60,10 @@ class Template(metaclass=PoolMeta):
                             user.company.currency, prices[template.id],
                             currency, round=False)
             if price_list:
+                product = None
                 price_list_category = (template.price_list_category and
                     template.price_list_category.id or None)
-                prices[template.id] = price_list.compute(customer, None,
-                    prices[template.id], quantity,
+                prices[template.id] = price_list.compute(product, quantity,
                     uom or template.default_uom, pattern={
                         'price_list_category': price_list_category,
                         })
