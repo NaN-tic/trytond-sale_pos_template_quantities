@@ -36,7 +36,7 @@ class SaleLine(metaclass=PoolMeta):
                 Bool(Eval('template_childs'))),
             },
         context={
-            'company': Eval('company'),
+            'company': Eval('company', -1),
             },
         depends=['type', 'product', 'template_childs', 'company'])
     template_parent = fields.Many2One('sale.line', 'Parent', domain=[
