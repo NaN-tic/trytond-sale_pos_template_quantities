@@ -216,6 +216,7 @@ class SaleLine(metaclass=PoolMeta):
     @classmethod
     def create(cls, vlist):
         template_lines_to_update = set()
+        vlist = [x.copy() for x in vlist]
         if not Transaction().context.get('no_update_template_qty'):
             for vals in vlist:
                 if vals.get('template_parent'):
