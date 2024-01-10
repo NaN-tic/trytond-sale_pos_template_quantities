@@ -43,7 +43,7 @@ class SaleLine(metaclass=PoolMeta):
             ('template', '!=', None),
             # TODO: template = product_template
             ('template_parent', '=', None),
-            ], ondelete='CASCADE', depends=['sale'])
+            ], ondelete='CASCADE')
     template_childs = fields.One2Many('sale.line', 'template_parent', 'Childs',
         domain=[('type', '=', 'line')])
 
@@ -293,7 +293,7 @@ class SetQuantitiesStart(ModelView):
             ('type', '=', 'template'),
             ])
     lines = fields.One2Many('sale_pos.set_quantities.start.line', 'start',
-        'Quantities', size=Eval('n_lines', 0), depends=['n_lines'])
+        'Quantities', size=Eval('n_lines', 0))
     n_lines = fields.Integer('Quantities')
     total_quantity = fields.Float('Total Quantity',
         digits='unit', readonly=True)
