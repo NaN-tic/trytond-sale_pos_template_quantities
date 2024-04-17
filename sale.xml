@@ -29,7 +29,7 @@
         <record model="ir.model.button" id="sale_line_set_quantities_wizard_button">
             <field name="name">set_quantities_wizard</field>
             <field name="string">Set Quantities</field>
-            <field name="model" search="[('model', '=', 'sale.line')]"/>
+            <field name="model">sale.line</field>
         </record>
 
         <record model="ir.action.wizard" id="wizard_set_quantities">
