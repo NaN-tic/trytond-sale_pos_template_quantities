@@ -102,7 +102,7 @@ class SaleLine(metaclass=PoolMeta):
                     },
                 })
 
-    @fields.depends('template', 'quantity', 'unit', 'description', 'sale',
+    @fields.depends('template', 'quantity', 'unit', 'description', 'sale', 'taxes',
         '_parent_sale.party')
     def on_change_template(self):
         Template = Pool().get('product.template')
