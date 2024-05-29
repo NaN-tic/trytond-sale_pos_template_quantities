@@ -156,7 +156,7 @@ class SaleLine(metaclass=PoolMeta):
         super(SaleLine, self).on_change_quantity()
 
         if self.template_parent:
-            self.unit_price = Decimal('0.0')
+            self.unit_price = Decimal(0)
         elif self.template:
             with Transaction().set_context(
                     self._get_context_sale_price()):
@@ -505,11 +505,11 @@ class SetQuantities(Wizard):
                     line.description = None
                     line.sale = template_line.sale
                     line.quantity = quantity
-                    line.unit_price = Decimal('0.0')
+                    line.unit_price = Decimal(0)
                     line.on_change_product()
 
                 line.quantity = quantity
-                line.unit_price = Decimal('0.0')
+                line.unit_price = Decimal(0)
                 with Transaction().set_context(no_update_template_qty=True):
                     line.save()
 
