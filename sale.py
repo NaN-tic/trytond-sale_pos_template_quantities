@@ -9,9 +9,7 @@ from trytond.pyson import And, Bool, Eval, Or, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.modules.product import round_price
-
-__all__ = ['Sale', 'SaleLine', 'SetQuantities', 'SetQuantitiesStart',
-    'SetQuantitiesStartLine']
+from trytond.model.model import record
 
 
 class Sale(metaclass=PoolMeta):
@@ -302,11 +300,11 @@ class SetQuantitiesStart(ModelView):
     def on_change_with_total_quantity(self):
         quantity = 0.0
         for line in self.lines:
-            for fname in line._values:
+            for fname in line._values.__slots__:
                 if (not fname.startswith('attribute_value_y_') or
                         fname == 'attribute_value_y'):
                     continue
-                quantity += line._values[fname] or 0.0
+                quantity += getattr(line._values, fname) or 0.0
         return quantity
 
 
@@ -324,7 +322,18 @@ class SetQuantitiesStartLine(ModelView):
 
     def __setattr__(self, name, value):
         if name.startswith('attribute_value_y_'):
-            self._values[name] = float(value) if value is not None else None
+            d = {}
+            for key in self._values.__slots__:
+                if key.startswith('_'):
+                    continue
+                try:
+                    d[key] = self._values[key]
+                except KeyError:
+                    continue
+            d[name] = float(value) if value is not None else None
+            Record = record(
+                self.__name__ + '._record', self._values.__slots__ + (name, ))
+            self._values = Record(**d)
             return
         return super().__setattr__(name, value)
 
@@ -430,7 +439,9 @@ class SetQuantities(Wizard):
             return {}
         # Raw products can be managed creating a field called raw_products
         # into the SetQuantitiesStart model.
-        raw_products = self.start._values.get('raw_products', False)
+        raw_products = False
+        if hasattr(self.start, 'raw_products') and self.start.raw_products:
+            raw_products = self.start.raw_products
         product_by_attributes = template_line.template.product_by_attributes(
             raw_products=raw_products)
         child_line_by_product = dict((l.product, l)
@@ -477,7 +488,7 @@ class SetQuantities(Wizard):
         lines_to_delete = []
         for quantity_line in self.start.lines:
             value_x = quantity_line.attribute_value_x
-            for value in quantity_line._values:
+            for value in quantity_line._values.__slots__:
                 if (not value.startswith('attribute_value_y_') or
                         value == 'attribute_value_y'):
                     continue
