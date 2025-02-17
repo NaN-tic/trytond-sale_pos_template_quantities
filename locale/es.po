@@ -14,10 +14,6 @@ msgctxt "field:sale.line,template_parent:"
 msgid "Parent"
 msgstr "Padre"
 
-msgctxt "field:sale_pos.set_quantities.start,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:sale_pos.set_quantities.start,lines:"
 msgid "Quantities"
 msgstr "Cantidades"
@@ -46,10 +42,6 @@ msgctxt "field:sale_pos.set_quantities.start.line,attribute_value_y:"
 msgid "Quantity"
 msgstr "Cantidad"
 
-msgctxt "field:sale_pos.set_quantities.start.line,id:"
-msgid "ID"
-msgstr "ID"
-
 msgctxt "field:sale_pos.set_quantities.start.line,start:"
 msgid "Start"
 msgstr "Iniciar"
@@ -66,6 +58,10 @@ msgctxt "model:ir.action,name:wizard_set_quantities"
 msgid "Set Quantities"
 msgstr "Fijar cantidades"
 
+msgctxt "model:ir.model.button,string:sale_line_set_quantities_wizard_button"
+msgid "Set Quantities"
+msgstr "Cantidades establecidas"
+
 msgctxt "model:sale_pos.set_quantities.start,name:"
 msgid "Set Quantities Wizard"
 msgstr "Asistente para fijar cantidades"
@@ -79,8 +75,8 @@ msgid "Set Quantities"
 msgstr "Fijar cantidades"
 
 msgctxt "view:sale_pos.set_quantities.start.line:"
-msgid "Set Quantities"
-msgstr "Fijar cantidades"
+msgid "Switch to the list view to edit the quantities"
+msgstr "Cambie a la vista de lista para editar las cantidades"
 
 msgctxt "view:sale_pos.set_quantities.start:"
 msgid "Set Quantities"
