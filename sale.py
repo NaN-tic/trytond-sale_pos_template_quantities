@@ -357,28 +357,27 @@ class SetQuantitiesStartLine(ModelView):
         pool = Pool()
         SaleLine = pool.get('sale.line')
 
-        res = tree.xpath('//field[@name=\'attribute_value_x\']')
-        if not res:
-            return
+        if type == 'tree':
+            res = tree.xpath('//field[@name=\'attribute_value_x\']')
+            if res:
+                template_line = SaleLine(Transaction().context.get('active_id'))
+                if template_line and template_line.id:
+                    attr_value_y_list = template_line.template.get_y_attribute_values()
 
-        template_line = SaleLine(Transaction().context.get('active_id'))
-        if template_line and template_line.id:
-            attr_value_y_list = template_line.template.get_y_attribute_values()
+                    element_value_x = res[0]
+                    new_elements = []
+                    for attribute_value in attr_value_y_list:
+                        new_element = copy.copy(element_value_x)
+                        new_element.set('name', 'attribute_value_y_' +
+                            str(attribute_value.id))
+                        new_element.set('sum', attribute_value.rec_name)
+                        new_elements.append(new_element)
+                    parent = element_value_x.getparent()
+                    base_index = parent.index(element_value_x)
+                    for i, element in enumerate(new_elements, 1):
+                        parent.insert(base_index + i, element)
 
-            element_value_x = res[0]
-            new_elements = []
-            for attribute_value in attr_value_y_list:
-                new_element = copy.copy(element_value_x)
-                new_element.set('name', 'attribute_value_y_' +
-                    str(attribute_value.id))
-                new_element.set('sum', attribute_value.rec_name)
-                new_elements.append(new_element)
-            parent = element_value_x.getparent()
-            base_index = parent.index(element_value_x)
-            for i, element in enumerate(new_elements, 1):
-                parent.insert(base_index + i, element)
-
-        return super(SetQuantitiesStartLine, cls).parse_view(tree, type, *args, **kwargs)
+        return super().parse_view(tree, type, *args, **kwargs)
 
     @classmethod
     def fields_get(cls, fields_names=None, level=0):
