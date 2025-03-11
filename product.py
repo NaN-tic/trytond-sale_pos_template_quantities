@@ -59,8 +59,10 @@ class Template(metaclass=PoolMeta):
                         prices[template.id] = Currency.compute(
                             user.company.currency, prices[template.id],
                             currency, round=False)
+
             if price_list:
-                product = None
+                # to eval unit_price, list_price or cost_price, required select a product
+                product = template.products[0]
                 price_list_category = (template.price_list_category and
                     template.price_list_category.id or None)
                 prices[template.id] = price_list.compute(product, quantity,
