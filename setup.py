@@ -10,9 +10,9 @@ from configparser import ConfigParser
 MODULE = 'sale_pos_template_quantities'
 PREFIX = 'nantic'
 MODULE2PREFIX = {
-    'product_variant',
-    'sale_pos',
-    'product_price_list_price_category',
+    'product_variant': 'nantic',
+    'sale_pos': 'nantic',
+    'product_price_list_price_category': 'nantic',
 }
 
 
@@ -81,7 +81,7 @@ setup(name='%s_%s' % (PREFIX, MODULE),
         ],
     package_data={
         'trytond.modules.%s' % MODULE: (info.get('xml', [])
-            + ['tryton.cfg', 'locale/*.po', 'tests/*.rst']),
+            + ['tryton.cfg', 'view/*.xml', 'locale/*.po', 'tests/*.rst']),
         },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
