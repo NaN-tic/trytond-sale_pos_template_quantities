@@ -486,6 +486,8 @@ class SetQuantities(Wizard):
         AttributeValue = pool.get('product.attribute.value')
         SaleLine = pool.get('sale.line')
         template_line = self.start.template_line
+        if not template_line or not template_line.template:
+            return 'end'
         product_by_attributes = template_line.template.product_by_attributes(
             raw_products=kwargs.get('raw_products', False))
         child_line_by_product = dict((l.product, l)
