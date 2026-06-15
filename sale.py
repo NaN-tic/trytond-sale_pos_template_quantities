@@ -338,7 +338,8 @@ class SetQuantitiesStartLine(ModelView):
         return super().__setattr__(name, value)
 
     @classmethod
-    def default_get(cls, fields_names, with_rec_name=True):
+    def default_get(
+            cls, fields_names=None, with_rec_name=True, with_default=True):
         return {}
 
     def _changed_values(self):
