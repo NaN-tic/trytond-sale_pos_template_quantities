@@ -30,7 +30,7 @@ class SaleLine(metaclass=PoolMeta):
             ],
         states={
             'invisible': Or(Eval('type') != 'line', Bool(Eval('product', 0))),
-            'readonly': Or(Bool(Eval('product', 0)),
+            'editable': ~Or(Bool(Eval('product', 0)),
                 Bool(Eval('template_childs'))),
             },
         context={
@@ -49,47 +49,46 @@ class SaleLine(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super(SaleLine, cls).__setup__()
-        if cls.type.states.get('readonly'):
-            cls.type.states['readonly'] = Or(cls.type.states['readonly'],
-                Bool(Eval('template_parent')),
-                Bool(Eval('template_childs')))
-        else:
-            cls.type.states['readonly'] = Or(Bool(Eval('template_parent')),
-                Bool(Eval('template_childs')))
+        editable = ~Or(
+            Bool(Eval('template_parent')),
+            Bool(Eval('template_childs')))
+        if cls.type.states.get('editable') is not None:
+            editable &= cls.type.states['editable']
+        cls.type.states['editable'] = editable
         cls.type.depends |= {'template_parent', 'template_childs'}
 
         cls.product.states['invisible'] = Or(cls.product.states['invisible'],
             Bool(Eval('template', -1)))
 
         if 'template' not in cls.product.depends:
-            readonly = Or(Bool(Eval('template', -1)),
-                       Bool(Eval('template_parent', -1)))
-            if cls.product.states.get('reaonly'):
-                readonly = Or(cls.product.states['readonly'], readonly)
-            cls.product.states['readonly'] = readonly
+            editable = ~Or(
+                Bool(Eval('template', -1)),
+                Bool(Eval('template_parent', -1)))
+            if cls.product.states.get('editable') is not None:
+                editable &= cls.product.states['editable']
+            cls.product.states['editable'] = editable
             cls.product.depends |= {'template', 'template_parent'}
 
         cls.unit.states['required'] = Or(cls.unit.states['required'],
             Bool(Eval('template')))
-        readonly = Bool(Eval('template_parent'))
-        if cls.unit.states.get('readonly'):
-            readonly = Or(cls.unit.states['readonly'], readonly)
-        cls.unit.states['readonly'] = readonly
+        editable = ~Bool(Eval('template_parent'))
+        if cls.unit.states.get('editable') is not None:
+            editable &= cls.unit.states['editable']
+        cls.unit.states['editable'] = editable
         cls.unit.depends |= {'template', 'template_parent'}
 
-        readonly = Bool(Eval('template', 0))
-        if cls.quantity.states.get('readonly'):
-            readonly = Or(cls.quantity.states['readonly'], readonly)
-        cls.quantity.states['readonly'] = readonly
+        editable = ~Bool(Eval('template', 0))
+        if cls.quantity.states.get('editable') is not None:
+            editable &= cls.quantity.states['editable']
+        cls.quantity.states['editable'] = editable
         cls.quantity.depends.add('template')
 
         for fname in ('unit_price', 'amount', 'taxes'):
             field = getattr(cls, fname)
-            if field.states.get('readonly'):
-                field.states['readonly'] = Or(field.states['readonly'],
-                    Bool(Eval('template_parent', 0)))
-            else:
-                field.states['readonly'] = Bool(Eval('template_parent', 0))
+            editable = ~Bool(Eval('template_parent', 0))
+            if field.states.get('editable') is not None:
+                editable &= field.states['editable']
+            field.states['editable'] = editable
             field.depends.add('template_parent')
 
         cls._buttons.update({
